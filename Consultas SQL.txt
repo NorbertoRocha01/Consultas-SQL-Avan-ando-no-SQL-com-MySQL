@@ -1,0 +1,451 @@
+
+
+Select * From tabela_de_produtos Where sabor IN ('Laranja', 'Manga');
+
+    =
+
+Select * From tabela_de_produtos Where sabor = 'Laranja' or
+                                       sabor = 'Manga';
+
+***********************************
+
+
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Manga'
+OR TAMANHO = '470 ml';
+
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Manga'
+AND TAMANHO = '470 ml';
+
+SELECT * FROM tabela_de_produtos WHERE NOT (SABOR = 'Manga'
+AND TAMANHO = '470 ml');
+
+SELECT * FROM tabela_de_produtos WHERE NOT (SABOR = 'Manga'
+OR TAMANHO = '470 ml');
+
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Manga'
+AND NOT ( TAMANHO = '470 ml');
+
+SELECT * FROM tabela_de_produtos WHERE SABOR IN ('Laranja', 'Manga');
+
+SELECT * FROM tabela_de_produtos WHERE SABOR = 'Laranja' OR SABOR = 'Manga';
+
+SELECT * FROM tabela_de_clientes WHERE CIDADE IN ('Rio de Janeiro','São Paulo')
+AND IDADE >= 20;
+
+SELECT * FROM tabela_de_clientes WHERE CIDADE IN ('Rio de Janeiro','São Paulo')
+AND (IDADE >= 20 AND IDADE <= 22);
+
+
+****************
+
+  DISTINCT   --->>  Só retorna as combinações diferentes, as iguais as
+                    retornadas antes não retornam 
+
+Select DISTINCT * From Tabela
+
+
+
+   LIMIT -->>  Limita o número de linhas exibidas
+
+   Select * From Tabela LIMIT 4  -->>  Só exibe 4 Linhas da TABELA
+
+   Select * From Tabela LIMIT 2,3 
+       -->>  Só exibe 3 Linhas a partir da 2a linha
+
+     
+****
+    ORDER BY   -->   Ordena pelo campo selecionado
+
+  Select * From  Tabela ORDER BY Campo
+
+     ASC --> Padrao do menor para o maior
+
+     DESC --> Do maior para o menor
+
+
+     ORDER BY campo1, campo2 -->  ordenação por 2 campos
+
+ Select * From tabela_de_produtos ORDER BY Preco_de_lista;
+     Ordena a exibição Crescente pelo PRECO_DE_LISTA
+
+ Select * From tabela_de_produtos ORDER BY Preco_de_lista DESC;
+     Ordena a exibição DECrescente pelo PRECO_DE_LISTA
+
+ Select * From tabela_de_produtos ORDER BY nome_do_produto;
+
+ Select * From tabela_de_produtos ORDER BY nome_do_produto DESC;
+
+ Select * From tebela_de_produtos ORDER By 
+      EMBALAGEM, Nome_do_produto;
+
+     -->>  ordena 1o na EMBALAGEM, e depois pelo nome
+
+
+ Select * From tebela_de_produtos ORDER By 
+      Embalagem DESC, Nome_do_produto ASC;
+
+     -->>  ordena 1o na EMBALAGEM em ordem DECRESCENTE,
+           e depois pelo nome ordem CRESCENTE
+
+
+******
+
+  GROUP BY   -->> apresenta resultado agrupando valores numérios 
+                  por uma CHAVE de CRITÉRIO
+
+exemplo
+   Select X, SUM(Y) From Tabela GROUP BY X
+
+         -->> agrupa pelo campo X e soma valores em Y
+
+       SUM  --> Soma
+       MAX  --> Máximo, seleciona os de maior valores
+       MIN  --> Mínimo, seleciona os de menores valores
+       AVG  --> Média,  soma e faz uma média dos valores
+       COUNT -> Conta Ocorrências
+
+Select estado, SUM(LIMITE_DE_CREDITO) As limite_total From 
+   Tabela_de_clientes GROUP BY estado;
+
+    -->> Agrupa por ESTADO, somando os limes de creditos
+          de cada um
+
+
+ Select embalagem, MAX(preco_de_lista) as Maior_preco From
+     tabela_de_produtos GROUP BY embalagem;
+
+     -->> ira mostrar embalagem/MAIOR_PRECO
+          exibirá o mais caro de cada  EMBALAGEM
+
+
+ Select embalagem, COUNT(*) AS contador FROM 
+     tabela_de_produtos GROUP BY embalagem;
+
+     -->> ira mostrar embalagem/CONTADOR
+          exibirá a quantidade de cada EMBALAGEM
+
+
+ Select bairro, SUM(limite_de_credito) as LIMITE FROM
+     tabela_de_clientes GROUP BY bairro;
+
+      -->> irá mostrar Bairro/LIMITE
+           exibirá o total do limite_de_credito por BAIRRO
+
+
+ Select bairro, SUM(limite_de_credito) as LIMITE FROM
+     tabela_de_clientes WHERE cidade = 'Rio de Jneiro'
+     GROUP BY bairro;
+
+      -->> irá mostrar Bairro/LIMITE
+           exibirá o total do limite_de_credito 
+           SÓ da cidade RIO DE JANEIRO
+           por BAIRRO
+            
+
+*****************
+
+   Select estado, bairro, SUM(limite_de_credito) As LIMITE 
+       From tabela_de_clientes
+       Where cidade = 'Rio de Janeiro'
+       GROUP BY estado, bairro
+       ORDER BY bairro;
+
+******************
+
+  HAVING - Filtro que se aplica sobre um SELECT agrupado
+
+    Select X, Sum(Y) From tab GROUP BY X;
+
+    Select X, Sum(Y) from tab GROUP BY X 
+      HAVING SUM(Y) >= 6;
+
+*******
+
+  CASE - fazer teste em um ou mais campos 
+
+
+  Select nome_do_produto, preco_de_lista,
+    CASE WHEN preco_de_lista >= 12 THEN 'Produto Caro'
+         WHEN preco_de_lista >= 7 AND
+              preco_de_lista <  12 THEN 'Produto em Conta'
+         ELSE
+             'Produto Barato' 
+    End AS STATUS_PRECO 
+    From tabela_de_produtos;
+
+     -->> onde STATUS_PRODUTO he o alias ou seja TITULO
+            da coluna onde irá exibir a mensagem
+
+       "nome_produto, preco_de_lista, STATUS_PRECO"
+
+
+
+  Select embalagem
+    CASE WHEN preco_de_lista >= 12 THEN 'Produto Caro'
+         WHEN preco_de_lista >= 7 AND
+              preco_de_lista <  12 THEN 'Produto em Conta'
+         ELSE
+             'Produto Barato' 
+    End AS STATUS_PRECO, AVG(preco_de_lista) AS PRECO_MEDIO 
+    From tabela_de_produtos
+      GROUP BY embalagem,
+        CASE WHEN preco_de_lista >= 12 THEN 'Produto Caro'
+           WHEN preco_de_lista >= 7 AND
+                preco_de_lista <  12 THEN 'Produto em Conta'
+           ELSE
+               'Produto Barato' 
+        End
+
+
+
+     -->> onde STATUS_PRODUTO he o alias ou seja TITULO
+            da coluna onde irá exibir a mensagem
+
+          PRECO_MEDIO he o alias ou seja TITULO
+             da coluna onde irá exibir o PRECO MEDIO
+
+       "embalagem, STATUS_PRECO, PRECO_MEDIO"
+
+
+
+****************************************
+
+Juntando Tabelas e Consultas
+
+  JOIN  -->>  juntar 2 ou mais tabelas em um comando SQL
+              através de campos em comum
+
+
+   LEFT JOIN  -->   Tras tudo da 1a tabela(esquerda),
+                    e da 2a so o que interagir
+
+
+   RIGHT JOIN  -->   Tras tudo da 2a tabela(direita),
+                    e da 1a so o que interagir
+
+
+   FULL JOIN  -->   Tras tudo das DUAS tabelas,
+                    os campos sem correspondencia
+                    aparecem com NULL
+
+    CROSS JOIN --> retorna o produto cartesiano das
+                   duas tabelas
+
+  Obs:  se no select tiver 2 tabelas sem informar a 
+        ligação entre elas, será feita a combinação
+        (produto cartesiano), entre as colunas
+
+     SELECT a.nome, b.hobby FROM
+       tabela_esquerda b, tabela_direita b
+
+       -->> irá combinar a.nome com b.hobby
+
+
+
+   Select * From tabela_de_vendedores A
+    INNER JOIN notas_fiscais B
+    ON A.matricula = b.matricula
+
+     --> irá trazer todos os campos das duas tabelas
+         relacionando pelo campo matricula
+
+
+  Select a.matricula, a.nome, COUNT(*) 
+    From tabela_de_vendedores a
+    INNER JOIN notas_fiscais b
+    ON a.matricula = b.matricula
+    GROUP BY a.matricula, a.nome;
+
+
+  Select DISTINCT a.cpf, a.nome, b.cpf 
+    FROM tabela_de_clientes a
+    LEFT JOIN notas_fiscaos b 
+       ON a.cpf = b.cpf
+    WREHE b.cpf IS NULL
+
+      -->  irá trazer só os que tem o CPF = NULL na segunda tabela
+           ou seja, os CLIENTES que NÃO tem registro na 2a tabela
+
+************
+
+  UNION  -->  faz a união de duas ou mais tabelas
+
+         ==>> é importante que as tabelas tenham o mesmo
+              numero e tipo de campos
+
+
+    Select Distinct bairro From tabela_de_clientes
+     UNION
+     Select Distinct bairro from tabela_de_vendedores;
+
+        --> irá unir o resultado da pesquisa em uma unica
+            coluna sem repetição dos campos
+
+
+
+    Select Distinct bairro From tabela_de_clientes
+     UNION ALL
+     Select Distinct bairro from tabela_de_vendedores;
+
+        --> irá unir o resultado da pesquisa em uma unica
+            coluna 1o os dados da 1a trabela e depois
+            da segunda
+
+**********
+
+   SUB-Consultas
+
+
+   Select x,y From tab1
+    Where y In (Select y From tab2)
+
+     -->>  lista os campos x,y da tab1 se 
+            y existir na tab2
+
+
+
+     Select x,Sum(y) As new_y  From tab1 Group by x
+
+       -->> lista o campo x, e a soma da campo y correspondente
+            a x
+
+
+     Select z.x, z.new_y From
+        (select x, Sum(y) As new_y From tab1
+           Group By x) z
+           Where z.new_y = 3;
+
+          -->> lita o campox, e q soma do campo y correspondente
+                a x onde y seja igual a 3
+
+
+    Select x.embalagem, x.preco_maximo From
+      (Select embalagem, Max(preco_de_lista) as preco_maximo
+            From tabela_de_produtos
+              Group By embalagem) x
+      Where x.preco_maximo >= 10;
+
+
+       -->>  o resultado de uma sub consulta pode ser tratado
+              como uma tabela "X"
+
+
+*******
+
+   VIEW  --- visão
+
+        Monta uma query com ddos selecionados
+
+     Obs==> As Views são criadas como tabelas auxiliares,
+       ou seja, selects já pre-definidos, salvos no SQL
+
+       Pelo Workbench podemos criar no menu File e deixa-las
+       salvas
+
+*****************************************
+
+  Funcoes do MYSQL
+
+
+dev.mysql.com/doc/
+
+www.w3schools.com/sql/func_mysql_ceiling.asp
+
+https://www.w3schools.com/sql/sql_ref_mysql.asp
+
+
+
+
+Select CURDATE();  --->> retorna data do computador yyyy-mm-dd
+
+
+Select CURRENT_TIMESTAMP();  -->> Retorna data e hora
+                             AAAAMMDDHHMMSS.uuuuuu
+
+
+
+Select CURRENT_TIME();  -->> Só retorna a HORA  HHMMSS
+
+
+
+Select DATEDIFF("2017-06-25", "2017-06-15");
+             -->> intervalo entre datas  resultado 10 dias
+
+
+
+Select YEAR(current_timestamp());   -- retorna o ano
+Select DAY(current_timestamp());   -- retorna o dia
+Select MONTH(current_timestamp());   -- retorna o mês
+
+Select MONTHNAME(current_timestamp()); -- retorna o nome mês
+
+select DATEDIFF(current_timestamp(), ´2019-01-01´) as RESULTADO;
+   -- >> retorna o intervalo de datas   109
+
+***********
+
+Select distinct data_venda,
+    DAYNAME(data_venda) as DIA,
+    MONTHNAME(data_venda) as MES,
+    YEAR(data_venda) as ANO From notas_fiscais;
+
+   DATA_VENDA   DIA        MES       ANO
+   2015-01-01   Thursday   January   2015
+   2015-01-02   Friday     January   2015
+   2015-01-03   Saturday   January   2015
+
+************
+Crie uma consulta que mostre o nome e a idade atual dos clientes.
+
+SELECT NOME, TIMESTAMPDIFF 
+      (YEAR, DATA_DE_NASCIMENTO, CURDATE()) AS    IDADE
+       FROM  tabela_de_clientes
+
+
+*************************
+PESQUISAR SOBRE
+
+       FUNÇÕES DE CONVERSÃO
+
+*************************
+
+
+
+Queremos construir um SQL cujo resultado seja, para cada cliente:
+    “O cliente João da Silva faturou 120000 no ano de 2016”.
+    Somente para o ano de 2016.
+
+
+
+SELECT CONCAT('O cliente ', TC.NOME, ' faturou ', 
+CAST(SUM(INF.QUANTIDADE * INF.preco) AS char (20))
+ , ' no ano ', CAST(YEAR(NF.DATA_VENDA) AS char (20))) AS SENTENCA FROM notas_fiscais NF
+INNER JOIN itens_notas_fiscais INF ON NF.NUMERO = INF.NUMERO
+INNER JOIN tabela_de_clientes TC ON NF.CPF = TC.CPF
+WHERE YEAR(DATA_VENDA) = 2016
+GROUP BY TC.NOME, YEAR(DATA_VENDA)
+
+
+
+*************************************************
+
+
+       
+
+
+
+
+
+
+   
+         
+
+
+
+
+
+
+
+
+
+
